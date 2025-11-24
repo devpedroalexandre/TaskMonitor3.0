@@ -1,0 +1,43 @@
+# Ignore virtual environments
+venv/
+.env
+*.env
+
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore logs and database
+*.log
+logs/
+*.db
+
+# Ignore backup files
+*.bak
+*.swp
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/project files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Ignore test coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.pytest_cache/
+
+# Ignore node_modules if for some reason exists
+node_modules/
+
+# Ignore build outputs
+build/
+dist/
+*.egg-info/
