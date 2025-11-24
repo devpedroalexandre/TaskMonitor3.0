@@ -1,0 +1,114 @@
+================================================================================
+TaskMonitor 3.0 - Backup de Monitoramento
+Data/Hora: 24/11/2025 10:05:21
+================================================================================
+
+[ INFORMAÇÕES DO SISTEMA ]
+--------------------------------------------------------------------------------
+Sistema Operacional: Windows 11
+Hostname: DESKTOP-9IIPNB8
+Arquitetura: AMD64
+Processador: Intel64 Family 6 Model 142 Stepping 12, GenuineIntel
+Tempo Ligado: 20h 53m
+Python: 3.13.9
+
+[ CPU ]
+--------------------------------------------------------------------------------
+Uso Total: 4.2%
+Frequência: 1803.0 MHz
+Núcleos Físicos: 4
+Núcleos Lógicos: 8
+Uso por Núcleo:
+  Core 0: 14.3%
+  Core 1: 0.0%
+  Core 2: 14.3%
+  Core 3: 0.0%
+  Core 4: 14.3%
+  Core 5: 0.0%
+  Core 6: 0.0%
+  Core 7: 0.0%
+
+[ MEMÓRIA RAM ]
+--------------------------------------------------------------------------------
+Total: 7.84 GB
+Usada: 6.88 GB
+Disponível: 0.95 GB
+Uso: 87.8%
+SWAP Total: 10.5 GB
+SWAP Usado: 1.37 GB
+SWAP: 13.1%
+
+[ DISCO ]
+--------------------------------------------------------------------------------
+Total: 237.29 GB
+Usado: 202.73 GB
+Livre: 34.56 GB
+Uso: 85.4%
+
+Partições:
+  C:\ (C:\) - NTFS
+    Total: 237.29 GB | Usado: 202.73 GB | Livre: 34.56 GB | Uso: 85.4%
+  D:\ (D:\) - NTFS
+    Total: 1847.07 GB | Usado: 718.69 GB | Livre: 1128.37 GB | Uso: 38.9%
+
+[ REDE ]
+--------------------------------------------------------------------------------
+Enviados (Total): 3157.66 MB
+Recebidos (Total): 5761.88 MB
+Enviados (Sessão): 4.91 MB
+Recebidos (Sessão): 128.75 MB
+Pacotes Enviados: 3497021
+Pacotes Recebidos: 620014
+Erros Entrada: 0
+Erros Saída: 0
+
+[ TOP 20 PROCESSOS ]
+--------------------------------------------------------------------------------
+PID        Nome                           CPU%       RAM%       Status         
+--------------------------------------------------------------------------------
+0          System Idle Process            555.4      0.00       running        
+10580      python.exe                     85.5       0.51       running        
+2536       msedge.exe                     29.9       2.13       running        
+4          System                         14.1       0.02       running        
+11088      msedge.exe                     6.9        3.30       running        
+11108      msedge.exe                     2.0        2.08       running        
+7268       msedge.exe                     1.0        0.40       running        
+14852      comet.exe                      1.0        0.16       running        
+2020       svchost.exe                    0.9        0.06       running        
+1316       lsass.exe                      0.8        0.15       running        
+172        Registry                       0          0.60       running        
+652        svchost.exe                    0          0.02       running        
+680        smss.exe                       0          0.00       running        
+1008       svchost.exe                    0          0.03       running        
+1056       csrss.exe                      0          0.02       running        
+
+[ CONEXÕES DE REDE ATIVAS ]
+--------------------------------------------------------------------------------
+Total de Conexões Estabelecidas: 21
+
+Endereço Local                 Endereço Remoto                Status         
+--------------------------------------------------------------------------------
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:53130 2600:1901:1:67e:::443          ESTABLISHED    
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:50422 2600:1419:8600:3::5c7a:cbc7:80 ESTABLISHED    
+192.168.1.213:50415            135.234.174.40:443             ESTABLISHED    
+127.0.0.1:49672                127.0.0.1:49673                ESTABLISHED    
+127.0.0.1:55571                127.0.0.1:55572                ESTABLISHED    
+127.0.0.1:49674                127.0.0.1:49675                ESTABLISHED    
+127.0.0.1:63377                127.0.0.1:8000                 ESTABLISHED    
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:51993 2804:7ab4:0:5:face:b00c:3333:7020:443 ESTABLISHED    
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:53122 2600:1901:1:67e:::443          ESTABLISHED    
+127.0.0.1:8000                 127.0.0.1:54540                ESTABLISHED    
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:51995 2a03:2887:ff5a:0:face:b00c:3333:7020:443 ESTABLISHED    
+127.0.0.1:54540                127.0.0.1:8000                 ESTABLISHED    
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:49411 2603:1030:210:f:::443          ESTABLISHED    
+127.0.0.1:8000                 127.0.0.1:63377                ESTABLISHED    
+127.0.0.1:55572                127.0.0.1:55571                ESTABLISHED    
+192.168.1.213:53115            34.158.255.62:4070             ESTABLISHED    
+127.0.0.1:49675                127.0.0.1:49674                ESTABLISHED    
+127.0.0.1:49673                127.0.0.1:49672                ESTABLISHED    
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:57236 2800:3f0:4003:c01::bc:5228     ESTABLISHED    
+2804:7ab4:1b4:b993:581a:c1ca:767d:94d3:53147 2800:3f0:4003:c0f::bc:5228     ESTABLISHED    
+
+================================================================================
+Fim do backup
+================================================================================

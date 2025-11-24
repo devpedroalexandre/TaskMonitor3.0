@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMonitor 3.0 - Dashboard</title>
+    
+    <!-- ✅ FAVICON ADICIONADO AQUI -->
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+    
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Fundo animado -->
+    <div class="cyber-background">
+        <div class="grid-lines"></div>        
+    </div>
+
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <h1 class="logo">
+                <span class="logo-icon">▲</span>
+                <span class="logo-text">TASK<span class="highlight">MONITOR</span></span>
+                <span class="version">3.0</span>
+            </h1>
+        </div>
+        
+        <div class="header-center">
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">SISTEMA ATIVO</span>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <button class="btn-icon" id="donateBtn" title="Apoiar o Projeto">
+                <span class="icon">💎</span>
+            </button>
+            <button class="btn-icon" id="themeToggle" title="Alternar Tema">
+                <span class="icon">🌓</span>
+            </button>
+        </div>
+    </header>
+
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <button class="nav-item active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </button>
+                <button class="nav-item" data-section="processes">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Processos</span>
+                </button>
+                <button class="nav-item" data-section="network">
+                    <span class="nav-icon">🌐</span>
+                    <span class="nav-text">Rede</span>
+                </button>
+                <button class="nav-item" data-section="system">
+                    <span class="nav-icon">💻</span>
+                    <span class="nav-text">Sistema</span>
+                </button>
+                <button class="nav-item" data-section="backups">
+                    <span class="nav-icon">💾</span>
+                    <span class="nav-text">Backups</span>
+                </button>
+                <button class="nav-item" data-section="logs">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-text">Logs</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="uptime-display">
+                    <span class="uptime-label">UPTIME</span>
+                    <span class="uptime-value" id="uptimeValue">--</span>
+                </div>
+            </div>
+        </aside>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h2 class="section-title">PAINEL DE CONTROLE</h2>
+                    <div class="last-update">
+                        Última atualização: <span id="lastUpdate">--</span>
+                    </div>
+                </div>
+
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card cpu">
+                        <div class="stat-header">
+                            <span class="stat-icon">🔥</span>
+                            <span class="stat-label">CPU</span>
+                        </div>
+                        <div class="stat-value" id="cpuValue">0%</div>
+                        <div class="stat-bar">
+                            <div class="stat-bar-fill" id="cpuBar"></div>
+                        </div>
+                        <div class="stat-details">
+                            <span id="cpuFreq">0 MHz</span>
+                            <span id="cpuCores">0 cores</span>
+                        </div>
+                    </div>
+
+
+                    <div class="stat-card ram">
+                        <div class="stat-header">
+                            <span class="stat-icon">🧠</span>
+                            <span class="stat-label">MEMÓRIA</span>
+                        </div>
+                        <div class="stat-value" id="ramValue">0%</div>
+                        <div class="stat-bar">
+                            <div class="stat-bar-fill" id="ramBar"></div>
+                        </div>
+                        <div class="stat-details">
+                            <span id="ramUsed">0 GB</span>
+                            <span>/</span>
+                            <span id="ramTotal">0 GB</span>
+                        </div>
+                    </div>
+
+
+                    <div class="stat-card disk">
+                        <div class="stat-header">
+                            <span class="stat-icon">💿</span>
+                            <span class="stat-label">DISCO</span>
+                        </div>
+                        <div class="stat-value" id="diskValue">0%</div>
+                        <div class="stat-bar">
+                            <div class="stat-bar-fill" id="diskBar"></div>
+                        </div>
+                        <div class="stat-details">
+                            <span id="diskUsed">0 GB</span>
+                            <span>/</span>
+                            <span id="diskTotal">0 GB</span>
+                        </div>
+                    </div>
+
+
+                    <div class="stat-card network">
+                        <div class="stat-header">
+                            <span class="stat-icon">📡</span>
+                            <span class="stat-label">REDE</span>
+                        </div>
+                        <div class="stat-value" id="networkValue">0 Mbps</div>
+                        <div class="stat-bar">
+                            <div class="stat-bar-fill" id="networkBar"></div>
+                        </div>
+                        <div class="stat-details">
+                            <span>↑ <span id="netSent">0 MB</span></span>
+                            <span>↓ <span id="netRecv">0 MB</span></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">USO DE CPU POR NÚCLEO</h3>
+                        <canvas id="cpuChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">HISTÓRICO DE MEMÓRIA</h3>
+                        <canvas id="memoryChart"></canvas>
+                    </div>
+                </div>
+
+
+                <!-- Network Chart -->
+                <div class="chart-card full-width">
+                    <h3 class="chart-title">TRÁFEGO DE REDE</h3>
+                    <canvas id="networkChart"></canvas>
+                </div>
+            </section>
+
+
+            <!-- Processes Section -->
+            <section id="processes" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">PROCESSOS ATIVOS</h2>
+                    <input type="text" id="processSearch" class="search-input" placeholder="Buscar processo...">
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="processTable">
+                        <thead>
+                            <tr>
+                                <th>PID</th>
+                                <th>NOME</th>
+                                <th>CPU %</th>
+                                <th>RAM %</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="processTableBody">
+                            <!-- Preenchido dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- Network Section -->
+            <section id="network" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">CONEXÕES DE REDE</h2>
+                    <button class="btn-secondary" id="toggleIPs">
+                        <span class="icon">👁️</span>
+                        <span id="ipToggleText">Mostrar IPs</span>
+                    </button>
+                </div>
+                <div class="network-stats">
+                    <div class="network-stat">
+                        <span class="label">Pacotes Enviados</span>
+                        <span class="value" id="packetsSent">0</span>
+                    </div>
+                    <div class="network-stat">
+                        <span class="label">Pacotes Recebidos</span>
+                        <span class="value" id="packetsRecv">0</span>
+                    </div>
+                    <div class="network-stat">
+                        <span class="label">Conexões Ativas</span>
+                        <span class="value" id="activeConnections">0</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="connectionTable">
+                        <thead>
+                            <tr>
+                                <th>LOCAL</th>
+                                <th>REMOTO</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="connectionTableBody">
+                            <!-- Preenchido dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- System Section -->
+            <section id="system" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">INFORMAÇÕES DO SISTEMA</h2>
+                </div>
+                <div class="system-info-grid" id="systemInfoGrid">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </section>
+
+
+            <!-- Backups Section -->
+            <section id="backups" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">GERENCIAMENTO DE BACKUPS</h2>
+                    <button class="btn-secondary" id="createBackupBtn">
+                        <span class="icon">💾</span>
+                        <span>Criar Backup</span>
+                    </button>
+                </div>
+                
+                <div class="stats-grid" style="margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-icon">📦</span>
+                            <span class="stat-label">TOTAL DE BACKUPS</span>
+                        </div>
+                        <div class="stat-value" id="totalBackups">0</div>
+                    </div>
+                    
+                    <!-- Card de Último Backup com Preview -->
+                    <div class="stat-card" id="lastBackupCard">
+                        <div class="stat-header">
+                            <span class="stat-icon">📅</span>
+                            <span class="stat-label">ÚLTIMO BACKUP</span>
+                        </div>
+                        <div class="stat-value" style="font-size: 1.2rem;">--</div>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ARQUIVO</th>
+                                <th>DATA/HORA</th>
+                                <th>TAMANHO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="backupTableBody">
+                            <!-- Preenchido dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+            <!-- Logs Section -->
+            <section id="logs" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">LOGS DO SISTEMA</h2>
+                </div>
+                
+                <div class="log-container">
+                    <div class="log-info">
+                        <p>📝 Os logs detalhados do sistema são salvos na pasta <code>/logs</code></p>
+                        <p>💡 Aqui você vê um resumo das últimas atividades do TaskMonitor 3.0</p>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>HORA</th>
+                                    <th>MENSAGEM</th>
+                                    <th>TIPO</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsTableBody">
+                                <!-- Preenchido dinamicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+
+    <!-- Donation Modal -->
+    <div class="modal" id="donationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <span class="icon">💎</span>
+                    APOIAR O PROJETO
+                </h2>
+                <button class="modal-close" id="closeDonateModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="donation-text">
+                    Se este projeto te ajudou, considere fazer uma doação!<br>
+                    Toda contribuição é muito apreciada. 🙏
+                </p>
+                <div class="donation-methods" id="donationMethods">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+
+    <!-- Scripts -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/donations.js"></script>
+</body>
+</html>
