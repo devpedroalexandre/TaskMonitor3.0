@@ -1,11 +1,9 @@
-"""
-Gerenciador de backups em TXT
-"""
 import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any
 from backend.app.config import settings
+
 
 class BackupManager:
     """Classe para gerenciar backups do sistema"""
@@ -139,8 +137,9 @@ class BackupManager:
                 "created": datetime.fromtimestamp(stat.st_ctime).strftime("%d/%m/%Y %H:%M:%S")
             })
         
-        # Ordenar por data de criação (mais recente primeiro)
-        backups.sort(key=lambda x: x['created'], reverse=True)
+        # ✅ SEM reverse - deixar o frontend fazer a ordenação decrescente
+        # Backend retorna em ordem CRESCENTE (mais antigos primeiro)
+        # Frontend com .sort() reverse=true coloca mais recentes primeiro
         return backups
     
     def delete_old_backups(self, keep_last: int = 10):
@@ -153,3 +152,4 @@ class BackupManager:
                     os.remove(backup['path'])
                 except Exception as e:
                     print(f"Erro ao deletar backup {backup['filename']}: {e}")
+                    
