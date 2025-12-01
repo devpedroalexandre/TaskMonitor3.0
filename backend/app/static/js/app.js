@@ -1,14 +1,12 @@
 // ============================================
-// 🔧 TASKMONITOR 3.0 + DOAÇÃO COM CARTÃO
+// 🔧 TASKMONITOR 3.0 - VERSÃO FINAL SIMPLIFICADA
 // ============================================
-// ✅ MODAL DE PAGAMENTO COM CARTÃO COMPLETO
-// ✅ VALIDAÇÃO DE NÚMERO (Luhn Algorithm)
-// ✅ DETECÇÃO AUTOMÁTICA DE BANDEIRA
-// ✅ MÁSCARA DE ENTRADA (formato automático)
-// ✅ VALIDAÇÃO CVV E DATA
-// ✅ SIMULAÇÃO REALISTA DE PAGAMENTO
+// ✅ SEM BARRA DE BUSCA (removida)
+// ✅ FILTROS ESTÁVEIS (não alternam sozinhos)
+// ✅ 50 PROCESSOS EXIBIDOS
+// ✅ CAMPOS OTIMIZADOS
 //
-// VERSÃO: 3.0.4 FINAL + CARTÃO
+// VERSÃO: 3.0.3 STABLE FINAL
 // ============================================
 
 // === GLOBAL STATE ===
@@ -30,6 +28,7 @@ let networkChart = null;
 let lastConnectionsData = null;
 let lastProcessesData = null;
 
+// Estado de ordenação das tabelas
 const sortState = {
     processes: { column: null, direction: 'desc' },
     connections: { column: null, direction: 'desc' }
@@ -38,7 +37,7 @@ const sortState = {
 
 // === INITIALIZATION ===
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 TaskMonitor 3.0 + DOAÇÃO COM CARTÃO');
+    console.log('🚀 TaskMonitor 3.0 - VERSÃO FINAL SIMPLIFICADA');
     document.documentElement.setAttribute('data-theme', currentTheme);
     
     const initWhenReady = setInterval(() => {
@@ -51,396 +50,23 @@ document.addEventListener('DOMContentLoaded', () => {
             setupKeyboardShortcuts();
             initializeLogs();
             setupTableSorting();
-            setupCreditCardPayment(); // ✅ NOVO
+            removeSearchBar(); // ✅ REMOVE BARRA DE BUSCA
         }
     }, 100);
 });
 
 
-// ✅ NOVO: SETUP PAGAMENTO COM CARTÃO
-function setupCreditCardPayment() {
-    setTimeout(() => {
-        const creditCardBtns = document.querySelectorAll('button');
-        creditCardBtns.forEach(btn => {
-            if (btn.textContent.includes('Cartão') || btn.textContent.includes('Doar com Cartão')) {
-                btn.removeAttribute('onclick');
-                btn.addEventListener('click', openCreditCardModal);
-                console.log('✅ Botão de doação com cartão configurado');
-            }
-        });
-    }, 1000);
-}
-
-
-// ✅ ABRE MODAL DE PAGAMENTO
-function openCreditCardModal() {
-    const modal = document.createElement('div');
-    modal.id = 'creditCardModal';
-    modal.className = 'modal active';
-    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 10000;';
-    
-    modal.innerHTML = `
-        <div style="background: var(--color-bg-secondary, #1a1a2e); border-radius: 16px; max-width: 500px; width: 90%; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-            <div style="padding: 2rem; border-bottom: 1px solid rgba(0,240,255,0.2);">
-                <h2 style="margin: 0; color: var(--color-text-primary, #fff); font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <span>💳</span>
-                    Doar com Cartão de Crédito
-                </h2>
-                <p style="margin: 0.5rem 0 0 0; color: var(--color-text-secondary, #aaa); font-size: 0.9rem;">
-                    Pagamento seguro via Mercado Pago
-                </p>
-            </div>
-            
-            <div style="padding: 2rem;">
-                <form id="creditCardForm" style="display: flex; flex-direction: column; gap: 1.2rem;">
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--color-text-primary); font-weight: 600; font-size: 0.9rem;">
-                            Valor da Doação (R$)
-                        </label>
-                        <input 
-                            type="text" 
-                            id="donationAmount" 
-                            placeholder="10,00"
-                            style="width: 100%; padding: 0.8rem; background: var(--color-surface, #262640); border: 1px solid var(--color-border, rgba(255,255,255,0.2)); border-radius: 8px; color: var(--color-text-primary); font-size: 1rem;"
-                            required
-                        />
-                    </div>
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--color-text-primary); font-weight: 600; font-size: 0.9rem;">
-                            Número do Cartão
-                        </label>
-                        <div style="position: relative;">
-                            <input 
-                                type="text" 
-                                id="cardNumber" 
-                                placeholder="0000 0000 0000 0000"
-                                maxlength="19"
-                                style="width: 100%; padding: 0.8rem; padding-right: 3.5rem; background: var(--color-surface, #262640); border: 1px solid var(--color-border, rgba(255,255,255,0.2)); border-radius: 8px; color: var(--color-text-primary); font-size: 1rem; font-family: monospace;"
-                                required
-                            />
-                            <span id="cardBrand" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem;"></span>
-                        </div>
-                        <span id="cardError" style="display: none; color: #ff0055; font-size: 0.8rem; margin-top: 0.3rem;"></span>
-                    </div>
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--color-text-primary); font-weight: 600; font-size: 0.9rem;">
-                            Nome no Cartão
-                        </label>
-                        <input 
-                            type="text" 
-                            id="cardName" 
-                            placeholder="NOME COMPLETO"
-                            style="width: 100%; padding: 0.8rem; background: var(--color-surface, #262640); border: 1px solid var(--color-border, rgba(255,255,255,0.2)); border-radius: 8px; color: var(--color-text-primary); font-size: 1rem; text-transform: uppercase;"
-                            required
-                        />
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: var(--color-text-primary); font-weight: 600; font-size: 0.9rem;">
-                                Validade
-                            </label>
-                            <input 
-                                type="text" 
-                                id="cardExpiry" 
-                                placeholder="MM/AA"
-                                maxlength="5"
-                                style="width: 100%; padding: 0.8rem; background: var(--color-surface, #262640); border: 1px solid var(--color-border, rgba(255,255,255,0.2)); border-radius: 8px; color: var(--color-text-primary); font-size: 1rem; font-family: monospace;"
-                                required
-                            />
-                        </div>
-                        
-                        <div>
-                            <label style="display: block; margin-bottom: 0.5rem; color: var(--color-text-primary); font-weight: 600; font-size: 0.9rem;">
-                                CVV
-                            </label>
-                            <input 
-                                type="text" 
-                                id="cardCVV" 
-                                placeholder="123"
-                                maxlength="4"
-                                style="width: 100%; padding: 0.8rem; background: var(--color-surface, #262640); border: 1px solid var(--color-border, rgba(255,255,255,0.2)); border-radius: 8px; color: var(--color-text-primary); font-size: 1rem; font-family: monospace;"
-                                required
-                            />
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 0.5rem; color: var(--color-text-primary); font-weight: 600; font-size: 0.9rem;">
-                            CPF do Titular
-                        </label>
-                        <input 
-                            type="text" 
-                            id="cardCPF" 
-                            placeholder="000.000.000-00"
-                            maxlength="14"
-                            style="width: 100%; padding: 0.8rem; background: var(--color-surface, #262640); border: 1px solid var(--color-border, rgba(255,255,255,0.2)); border-radius: 8px; color: var(--color-text-primary); font-size: 1rem; font-family: monospace;"
-                            required
-                        />
-                    </div>
-                    
-                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                        <button 
-                            type="button" 
-                            onclick="closeCreditCardModal()"
-                            style="flex: 1; padding: 1rem; background: rgba(255,255,255,0.1); color: var(--color-text-primary); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;"
-                        >
-                            Cancelar
-                        </button>
-                        
-                        <button 
-                            type="submit"
-                            style="flex: 2; padding: 1rem; background: linear-gradient(135deg, #00f0ff, #0080ff); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;"
-                        >
-                            <span id="payBtnText">💳 Processar Pagamento</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-            
-            <div style="padding: 1rem 2rem; background: rgba(0,240,255,0.05); border-top: 1px solid rgba(0,240,255,0.1); font-size: 0.8rem; color: var(--color-text-secondary);">
-                🔒 Pagamento seguro e criptografado
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    setupCardInputMasks();
-    setupCardValidation();
-    setupFormSubmit();
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeCreditCardModal();
-        }
-    });
-}
-
-
-// ✅ MÁSCARAS DE ENTRADA
-function setupCardInputMasks() {
-    const amountInput = document.getElementById('donationAmount');
-    const cardNumberInput = document.getElementById('cardNumber');
-    const expiryInput = document.getElementById('cardExpiry');
-    const cvvInput = document.getElementById('cardCVV');
-    const cpfInput = document.getElementById('cardCPF');
-    
-    if (amountInput) {
-        amountInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value) {
-                value = (parseInt(value) / 100).toFixed(2);
-                e.target.value = value.replace('.', ',');
-            }
-        });
-    }
-    
-    if (cardNumberInput) {
-        cardNumberInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-            e.target.value = value.trim();
-            detectCardBrand(value.replace(/\s/g, ''));
-        });
-    }
-    
-    if (expiryInput) {
-        expiryInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.substring(0, 2) + '/' + value.substring(2, 4);
-            }
-            e.target.value = value;
-        });
-    }
-    
-    if (cvvInput) {
-        cvvInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/\D/g, '');
-        });
-    }
-    
-    if (cpfInput) {
-        cpfInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            e.target.value = value;
-        });
+// ✅ REMOVE BARRA DE BUSCA
+function removeSearchBar() {
+    const searchInput = document.querySelector('input[placeholder*="cameL"], input[placeholder*="Buscar"]');
+    if (searchInput) {
+        searchInput.remove();
+        console.log('✅ Barra de busca removida');
     }
 }
 
 
-// ✅ DETECTA BANDEIRA DO CARTÃO
-function detectCardBrand(number) {
-    const brandSpan = document.getElementById('cardBrand');
-    if (!brandSpan) return;
-    
-    const patterns = {
-        visa: /^4/,
-        mastercard: /^5[1-5]/,
-        amex: /^3[47]/,
-        elo: /^(4011|4312|4389|4514|4576|5041|5066|5067|6277|6362|6363|6500|6516)/,
-        diners: /^3(?:0[0-5]|[68])/,
-        discover: /^6(?:011|5)/
-    };
-    
-    const brands = {
-        visa: '💳 Visa',
-        mastercard: '💳 Master',
-        amex: '💳 Amex',
-        elo: '💳 Elo',
-        diners: '💳 Diners',
-        discover: '💳 Discover'
-    };
-    
-    for (let brand in patterns) {
-        if (patterns[brand].test(number)) {
-            brandSpan.textContent = brands[brand];
-            brandSpan.style.color = '#00f0ff';
-            return brand;
-        }
-    }
-    
-    brandSpan.textContent = '💳';
-    brandSpan.style.color = '#888';
-    return null;
-}
-
-
-// ✅ VALIDAÇÃO LUHN (algoritmo real de cartão de crédito)
-function validateCardNumber(number) {
-    number = number.replace(/\s/g, '');
-    
-    if (!/^\d{13,19}$/.test(number)) {
-        return false;
-    }
-    
-    let sum = 0;
-    let isEven = false;
-    
-    for (let i = number.length - 1; i >= 0; i--) {
-        let digit = parseInt(number[i]);
-        
-        if (isEven) {
-            digit *= 2;
-            if (digit > 9) {
-                digit -= 9;
-            }
-        }
-        
-        sum += digit;
-        isEven = !isEven;
-    }
-    
-    return sum % 10 === 0;
-}
-
-
-// ✅ VALIDAÇÃO EM TEMPO REAL
-function setupCardValidation() {
-    const cardNumberInput = document.getElementById('cardNumber');
-    const cardError = document.getElementById('cardError');
-    
-    if (cardNumberInput && cardError) {
-        cardNumberInput.addEventListener('blur', () => {
-            const number = cardNumberInput.value.replace(/\s/g, '');
-            
-            if (number.length > 0) {
-                if (validateCardNumber(number)) {
-                    cardError.style.display = 'none';
-                    cardNumberInput.style.borderColor = '#00f0ff';
-                } else {
-                    cardError.style.display = 'block';
-                    cardError.textContent = '❌ Número de cartão inválido';
-                    cardNumberInput.style.borderColor = '#ff0055';
-                }
-            }
-        });
-    }
-}
-
-
-// ✅ SUBMIT DO FORMULÁRIO
-function setupFormSubmit() {
-    const form = document.getElementById('creditCardForm');
-    
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const data = {
-                amount: document.getElementById('donationAmount').value,
-                cardNumber: document.getElementById('cardNumber').value.replace(/\s/g, ''),
-                cardName: document.getElementById('cardName').value,
-                cardExpiry: document.getElementById('cardExpiry').value,
-                cardCVV: document.getElementById('cardCVV').value,
-                cardCPF: document.getElementById('cardCPF').value.replace(/\D/g, '')
-            };
-            
-            if (!validateCardNumber(data.cardNumber)) {
-                showToast('❌ Número de cartão inválido', 'error');
-                return;
-            }
-            
-            if (data.cardCPF.length !== 11) {
-                showToast('❌ CPF inválido', 'error');
-                return;
-            }
-            
-            await processCreditCardPayment(data);
-        });
-    }
-}
-
-
-// ✅ PROCESSA PAGAMENTO (SIMULAÇÃO REALISTA)
-async function processCreditCardPayment(data) {
-    const payBtn = document.querySelector('#creditCardForm button[type="submit"]');
-    const payBtnText = document.getElementById('payBtnText');
-    
-    if (!payBtn || !payBtnText) return;
-    
-    payBtn.disabled = true;
-    payBtn.style.opacity = '0.6';
-    payBtn.style.cursor = 'not-allowed';
-    
-    payBtnText.innerHTML = '⏳ Processando...';
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    payBtnText.innerHTML = '🔒 Validando cartão...';
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    payBtnText.innerHTML = '💳 Autorizando pagamento...';
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    payBtnText.innerHTML = '✅ Pagamento Aprovado!';
-    
-    showToast(`✅ Doação de R$ ${data.amount} realizada com sucesso!`, 'success');
-    addLog(`Doação processada: R$ ${data.amount} - Cartão ${data.cardNumber.slice(-4)}`, 'success');
-    
-    setTimeout(() => {
-        closeCreditCardModal();
-        showToast('💚 Obrigado pela sua doação!', 'success');
-    }, 2000);
-}
-
-
-// ✅ FECHA MODAL
-function closeCreditCardModal() {
-    const modal = document.getElementById('creditCardModal');
-    if (modal) {
-        modal.remove();
-    }
-}
-
-
-// ✅ SETUP SORTING
+// ✅ SETUP SORTING (SIMPLIFICADO - SEM AUTO-UPDATE)
 function setupTableSorting() {
     const processHeaders = document.querySelectorAll('#processTable thead th');
     processHeaders.forEach((header, index) => {
@@ -472,11 +98,13 @@ function setupTableSorting() {
 }
 
 
+// ✅ ORDENAÇÃO SIMPLIFICADA (NÃO AUTO-ATUALIZA)
 function sortProcessTable(columnKey, columnIndex) {
     if (!lastProcessesData) return;
     
     const currentSort = sortState.processes;
     
+    // Alterna direção se clicar na mesma coluna
     if (currentSort.column === columnKey) {
         currentSort.direction = currentSort.direction === 'desc' ? 'asc' : 'desc';
     } else {
@@ -564,6 +192,7 @@ function sortConnectionTable(columnKey, columnIndex) {
 }
 
 
+// ✅ SETAS CORRETAS
 function updateSortIndicator(tableId, columnIndex) {
     const headers = document.querySelectorAll(`#${tableId} thead th`);
     headers.forEach(h => {
@@ -579,6 +208,7 @@ function updateSortIndicator(tableId, columnIndex) {
 }
 
 
+// === WEBSOCKET ===
 function initWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/api/ws`;
@@ -785,17 +415,21 @@ function updateBattery(battery) {
 }
 
 
+// ✅ SIMPLES: APENAS ATUALIZA (sem ordenar automaticamente)
 function updateProcesses(processes) {
     if (!processes) return;
     
     lastProcessesData = processes;
     
+    // Se NÃO há ordenação ativa, apenas atualiza
     if (!sortState.processes.column) {
         updateProcessTableDisplay(processes);
     }
+    // Se HÁ ordenação, NÃO faz nada (mantém a tabela como está)
 }
 
 
+// ✅ 50 PROCESSOS
 function updateProcessTableDisplay(processes) {
     const tbody = document.getElementById('processTableBody');
     if (!tbody) return;
@@ -871,6 +505,7 @@ function updateSystemInfo(system) {
     
     let cards = [];
     
+    // Sistema Operacional
     let osItems = [];
     if (!isEmptyValue(system.platform)) osItems.push(`<div class="info-item"><span class="info-label">Plataforma</span><span class="info-value">${escapeHtml(system.platform)}</span></div>`);
     if (!isEmptyValue(system.platform_release)) osItems.push(`<div class="info-item"><span class="info-label">Versão</span><span class="info-value">${escapeHtml(system.platform_release)}</span></div>`);
@@ -887,6 +522,7 @@ function updateSystemInfo(system) {
         `);
     }
     
+    // CPU
     let cpuItems = [];
     if (!isEmptyValue(system.processor)) cpuItems.push(`<div class="info-item"><span class="info-label">Modelo</span><span class="info-value" style="font-size: 0.85rem;">${escapeHtml(system.processor)}</span></div>`);
     if (!isEmptyValue(system.cpu_count_physical)) cpuItems.push(`<div class="info-item"><span class="info-label">Núcleos Físicos</span><span class="info-value">${system.cpu_count_physical}</span></div>`);
@@ -902,6 +538,7 @@ function updateSystemInfo(system) {
         `);
     }
     
+    // Memória
     let memItems = [];
     if (!isEmptyValue(system.memory_total)) memItems.push(`<div class="info-item"><span class="info-label">RAM Total</span><span class="info-value">${system.memory_total}</span></div>`);
     if (!isEmptyValue(system.memory_used)) memItems.push(`<div class="info-item"><span class="info-label">RAM Usada</span><span class="info-value">${system.memory_used}${system.memory_percent ? ' (' + system.memory_percent + '%)' : ''}</span></div>`);
@@ -920,9 +557,10 @@ function updateSystemInfo(system) {
         `);
     }
     
+    // Software
     let swItems = [];
     if (!isEmptyValue(system.python_version)) swItems.push(`<div class="info-item"><span class="info-label">Python</span><span class="info-value">${system.python_version}</span></div>`);
-    swItems.push(`<div class="info-item"><span class="info-label">TaskMonitor</span><span class="info-value">3.0.4 Final</span></div>`);
+    swItems.push(`<div class="info-item"><span class="info-label">TaskMonitor</span><span class="info-value">3.0.3 Final</span></div>`);
     if (!isEmptyValue(system.uptime_formatted)) swItems.push(`<div class="info-item"><span class="info-label">Uptime</span><span class="info-value">${system.uptime_formatted}</span></div>`);
     
     if (swItems.length > 0) {
@@ -938,6 +576,7 @@ function updateSystemInfo(system) {
 }
 
 
+// === CHARTS ===
 function initCharts() {
     console.log('📊 Inicializando gráficos...');
     
@@ -1090,6 +729,7 @@ function updateCharts(data) {
 }
 
 
+// === EVENT LISTENERS ===
 function setupEventListeners() {
     document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -1189,6 +829,7 @@ async function createBackup() {
         showToast('Criando backup...', 'info');
         addLog('Iniciando criação de backup...');
         
+        
         const response = await fetch('/api/backup', {
             method: 'POST'
         });
@@ -1198,7 +839,9 @@ async function createBackup() {
         if (data.success) {
             showToast('Backup criado com sucesso!', 'success');
             addLog(`Backup criado: ${data.filepath}`, 'success');
-            loadBackups();
+
+            // ✅ CORRIGIDO: Agora com await para garantir atualização
+            await loadBackups();
         } else {
             showToast('Erro ao criar backup', 'error');
             addLog('Erro ao criar backup', 'error');
@@ -1221,7 +864,11 @@ async function loadBackups() {
         const lastBackupCard = document.getElementById('lastBackupCard');
         
         if (totalBackups) totalBackups.textContent = data.count;
-        
+                
+        if (data.backups) {
+            data.backups.reverse();
+        }     
+     
         if (data.backups && data.backups.length > 0) {
             if (lastBackupCard) {
                 const latestBackup = data.backups[0];
@@ -1523,7 +1170,7 @@ function updateLogsDisplay() {
 
 
 function initializeLogs() {
-    addLog('Sistema inicializado - DOAÇÃO COM CARTÃO');
+    addLog('Sistema inicializado - Versão Final Simplificada');
 }
 
 
@@ -1574,6 +1221,7 @@ function copyPixKey(key) {
 }
 
 
+// === STYLES ===
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
@@ -1617,4 +1265,4 @@ style.textContent = `
 document.head.appendChild(style);
 
 
-console.log('✅ TaskMonitor 3.0.4 - DOAÇÃO COM CARTÃO CARREGADO!');
+console.log('✅ TaskMonitor 3.0.3 - VERSÃO FINAL SIMPLIFICADA CARREGADO!');
