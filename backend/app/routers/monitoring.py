@@ -10,6 +10,10 @@ from datetime import datetime
 import sys
 from pathlib import Path
 import time
+import logging
+
+# Configura logger
+logger = logging.getLogger('taskmonitor')
 
 
 # Adicionar o diretório raiz ao path
@@ -268,6 +272,7 @@ async def get_system_info():
 
 @router.post("/backup")
 async def create_backup():
+    logger.info('📦 Criando backup...') 
     """Criar backup das métricas atuais - SEM LIMITE DE BACKUPS"""
     try:
         metrics = monitor.get_all_metrics()
@@ -281,6 +286,7 @@ async def create_backup():
             "timestamp": datetime.now().isoformat()
         })
     except Exception as e:
+        logger.error(f'❌ Erro ao criar backup: {str(e)}')
         return JSONResponse(
             status_code=500,
             content={"success": False, "error": str(e)}
